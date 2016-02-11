@@ -5,7 +5,7 @@ import subprocess
 import os
 import datetime
 
-DATA_TOPICS = ['camera', 'gps', 'actuation', 'lidar', 'imu', 'encoders', 'processed_image', 'velocity']
+DATA_TOPICS = ['camera', 'gps', 'actuation', 'lidar', 'imu', 'encoders', 'processed_image', 'velocity', 'camera_array']
 
 class DataCollector():
     def __init__(self, params):
@@ -17,7 +17,8 @@ class DataCollector():
             'imu': 'TODO',
             'encoders': 'TODO',
             'processed_image': 'TODO',
-            'velocity': '/velocity_est'
+            'velocity': '/velocity_est',
+            'camera_array': '/image_raw'
         }
         self.root_path = params['root_path']
         self.topic_booleans = {topic: params[topic] for topic in DATA_TOPICS}

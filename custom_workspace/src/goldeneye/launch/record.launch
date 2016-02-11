@@ -11,6 +11,7 @@
   <arg name="actuation" default="True" />
   <arg name="velocity" default="False" />
   <arg name="root_path" default="/home/odroid/goldeneye_data" />
+  <arg name="camera_array" default="False" />
 
   <param name="camera" value="$(arg camera)" type="boolean"/>
   <param name="processed_image" value="$(arg processed_image)" type="boolean"/>
@@ -21,5 +22,6 @@
   <param name="velocity" value="$(arg velocity)" type="boolean"/>
   <param name="actuation" value="$(arg actuation)" type="boolean"/>
   <param name="root_path" value="$(arg root_path)" type="string"/>
+  <param name="camera_array" value="$(arg camera_array)" type="boolean"/>
 
 </launch>
