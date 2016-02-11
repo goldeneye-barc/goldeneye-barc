@@ -10,7 +10,7 @@ DATA_TOPICS = ['camera', 'gps', 'actuation', 'lidar', 'imu', 'encoders', 'proces
 class DataCollector():
     def __init__(self, params):
         self.topic_mappings = {
-            'camera': '/image',
+            'camera': '/image_raw',
             'gps': 'TODO',
             'actuation': '/ecu_pwm',
             'lidar': 'TODO',
