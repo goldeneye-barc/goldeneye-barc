@@ -65,15 +65,15 @@ def image_node():
     global error
     error = 0
 
-   # param_names = ['lowerY', 'upperY', 'display_image', 'display_processed_image', 'debug_info', 'publish_processed_image']
-   # params = {}
-    #for param in param_names:
-     #   params[param] = rospy.get_param(param)
-   # print(params)
+    param_names = ['lowerY', 'upperY', 'display_image', 'display_processed_image', 'debug_info', 'publish_processed_image']
+    params = {}
+    for param in param_names:
+        params[param] = rospy.get_param(param)
+    print(params)
 
     rospy.init_node('Test_Imager')
     img_pub = rospy.Publisher('/processed_image', Image, queue_size=1)
-    #params['img_pub'] = img_pub
+    params['img_pub'] = img_pub
     rospy.Subscriber('/image_raw/compressed', CompressedImage, image_process, params)
     pub = rospy.Publisher('ecu_pwm', ECU, queue_size=10)
     rate = rospy.Rate(10)
@@ -84,8 +84,8 @@ def image_node():
     while not rospy.is_shutdown():
         msg = ECU()
 
-     #   if params['debug_info']:
-      #      print(error)
+        if params['debug_info']:
+            print(error)
         msg.motor = 1590
         msg.servo = 1500 + K*error # Ki*integral
         pub.publish(msg)
