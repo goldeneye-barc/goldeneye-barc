@@ -9,6 +9,7 @@
   <arg name="imu" default="False" />
   <arg name="encoders" default="False" />
   <arg name="actuation" default="True" />
+  <arg name="velocity" default="False" />
   <arg name="root_path" default="/home/odroid/goldeneye_data" />
 
   <param name="camera" value="$(arg camera)" type="boolean"/>
@@ -17,6 +18,7 @@
   <param name="lidar" value="$(arg lidar)" type="boolean"/>
   <param name="imu" value="$(arg imu)" type="boolean"/>
   <param name="encoders" value="$(arg encoders)" type="boolean"/>
+  <param name="velocity" value="$(arg velocity)" type="boolean"/>
   <param name="actuation" value="$(arg actuation)" type="boolean"/>
   <param name="root_path" value="$(arg root_path)" type="string"/>
 

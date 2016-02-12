@@ -5,7 +5,7 @@ import subprocess
 import os
 import datetime
 
-DATA_TOPICS = ['camera', 'gps', 'actuation', 'lidar', 'imu', 'encoders', 'processed_image']
+DATA_TOPICS = ['camera', 'gps', 'actuation', 'lidar', 'imu', 'encoders', 'processed_image', 'velocity']
 
 class DataCollector():
     def __init__(self, params):
@@ -16,7 +16,8 @@ class DataCollector():
             'lidar': 'TODO',
             'imu': 'TODO',
             'encoders': 'TODO',
-            'processed_image': 'TODO'
+            'processed_image': 'TODO',
+            'velocity': '/velocity_est'
         }
         self.root_path = params['root_path']
         self.topic_booleans = {topic: params[topic] for topic in DATA_TOPICS}
@@ -40,7 +41,7 @@ class DataCollector():
         rosbag_command = 'rosbag record '
         for topic, rec in self.topic_booleans.items():
             if rec and topic not in self.special_topics:
-                rosbag_command += self.topic_mappings[topic]
+                rosbag_command += ' ' + self.topic_mappings[topic]
         print('RUNNING: ', rosbag_command)
         self.rosbag_proc = subprocess.Popen(rosbag_command, stdin=subprocess.PIPE, shell=True, cwd=self.log_dir)
 
