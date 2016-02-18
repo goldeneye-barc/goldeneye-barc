@@ -11,7 +11,7 @@ def calculate_rotation(msg):
     C = 0.374
     diff = msg.BR - msg.BL
     dist_diff = (wheel_diameter * pi * diff) / 8
-    rotation = 360 * 0.374 * (dist_diff / (rotation_diameter * pi))
+    rotation = 360.0 * 0.374 * (dist_diff / (rotation_diameter * pi))
     return
 
 def rotation_node():
