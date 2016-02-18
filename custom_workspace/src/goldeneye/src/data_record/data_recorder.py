@@ -12,7 +12,7 @@ class DataCollector():
         self.topic_mappings = {
             'camera': '/image_raw',
             'camera_array': '/image_raw',
-            'gps': '/hedge_pos',
+            'gps': '/hedge_pos_a',
             'actuation': '/ecu_pwm',
             'lidar': '/scan',
             'imu': '/imu/data',
