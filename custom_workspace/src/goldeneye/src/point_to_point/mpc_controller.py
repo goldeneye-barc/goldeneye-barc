@@ -61,6 +61,7 @@ def mpc_node():
 
     max_steer = np.pi/6
     K = 400/max_steer
+    V = 1
 
     while not rospy.is_shutdown():# and r.successful():
         delta = mpc_controller(Psi,X,Y,targetX,targetY,V)

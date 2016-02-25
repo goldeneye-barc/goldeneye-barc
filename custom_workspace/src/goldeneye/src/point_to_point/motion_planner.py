@@ -4,7 +4,7 @@ from geometry_msgs.msg import Vector3
 from sensor_msgs.msg import Imu
 from math import sin, cos
 import numpy as np
-#from marvelmind_nav.msg import hedge_pos
+from marvelmind_nav.msg import hedge_pos
 
 def get_xy(msg):
     global X,Y
@@ -54,10 +54,31 @@ def plan_path(obstacles, goal, X, Y, Psi):
     return waypoints
 
 
+def preprocess(params):
+    #  launch file string arguments as goal:="x,y" obstacles:="x1,y1,r1;x2,y2,r2"
+    #goall
+    goal_str = params['goal'].replace(" ", "")
+    goal_x, goal_y = map(float, goal_str.split(','))
+    params['goal'] = (goal_x, goal_y)
+
+    #obstacles
+    def process_obstacle(obs):
+        return map(float, obs.split(','))
+
+    obstacles_str = params['obstacles'].replace(" ", "")
+    obstacles = [process_obstacle(obstacle) for obstacle in obstacles_str.split(';')]
+    params['obstacles'] = obstacles
+    return params
 
 def motion_planner():
     global X,Y,Psi
     X, Y, Psi = None, None, None
+    param_names = ['goal', 'obstacles'] 
+    params = {}
+    for param in param_names:
+        params[param] = rospy.get_param(param)
+    params = preprocess(params)
+    print(params)
 
     rospy.init_node('motion_planner')
     rospy.Subscriber('hedge_pos',hedge_pos,get_xy,queue_size=10)
@@ -65,6 +86,7 @@ def motion_planner():
     pub = rospy.Publisher('target_position',Vector3, queue_size=10)
     rate = rospy.Rate(10)
     while X is None or Y is None or Psi is None: continue
+    print("Received first X, Y, Psi position")
 
     waypoints = plan_path(obstacles, goal) # np.array of [(x1, y1, r1), (x2, y2, r3) ...] ; (x, y)
     curr_waypoint = 0
