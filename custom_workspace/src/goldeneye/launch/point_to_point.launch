@@ -1,0 +1,24 @@
+<launch>
+  <arg name="goal" />
+  <param name="goal" value="$(arg goal)" type="string"/>
+  <arg name="obstacles" />
+  <param name="obstacles" value="$(arg obstacles)" type="string"/>
+
+  <node pkg="rosserial_python" type="serial_node.py" name="arduino_node" >
+      <param name="port" value="/dev/ttyUSB1" />
+  </node>
+
+  <node pkg="myahrs_driver" type="myahrs_driver" name="myahrs_driver">
+      <param name="port" value="/dev/ttyACM0" />
+      <param name="baud_rate" value="115200" />
+  </node>
+
+  <node pkg="marvelmind_nav" type="hedge_rcv_bin" name="barc_gps" output="screen" args="/dev/ttyACM1">
+  </node>
+  <node pkg="goldeneye" type="find_euler.py" name="find_euler" output="screen">
+  </node>
+  <node pkg="goldeneye" type="motion_planner.py" name="motion_planner" output="screen">
+  </node>
+  <node pkg="goldeneye" type="mpc_controller.py" name="mpc_controller" output="screen">
+  </node>
+</launch>
