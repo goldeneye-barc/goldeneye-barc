@@ -1,0 +1,45 @@
+import rospy
+import time
+from barc.msg import ECU
+import numpy as np
+import math as m
+from control.matlab import *
+
+def ctrl_callback(data):
+	global lat_err, yaw_err, vel_x
+	lat_err = data.lat_err
+	yaw_err = data.yaw_err
+	vel_x   = data.vel_x
+
+def ctrl_action():
+	global C, m ,Iz, L
+	Pvec = [-2 -3 -4 -5]
+	Amat = [[0,1,0,0],[0,-4*C/(m*vel_x),4*C/m,0],[0,0,0,1],[0,0,0,-4*C*pow(L,2)/(Iz*Vx)]]
+	B1vec = [[0],[2*C/m],[0],[2*C*L/Iz]]
+	K = statefbk.place(Amat,B1vec,P)
+	return d_f
+
+def state_feedback():
+
+	rospy.init_node('state_feedback_ctrl', anonymous = True)
+
+	rospy.Subscriber()
+	ctrl_out = rospy.Publisher('lk_out', __, queue_size = 10)
+
+
+	loop_rate = 50
+	ts = 1.0 / loop_rate
+	rate = rospy.Rate(loop_rate)
+	t0 = time.time()
+
+
+	while not rospy.is_shutdown():
+		
+		ctrl_out.publish()
+
+		rate.sleep()
+
+
+
+
+if __name__ == '__main__':
