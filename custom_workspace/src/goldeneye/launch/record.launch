@@ -1,0 +1,21 @@
+<launch>
+  <node pkg="goldeneye" type="data_recorder.py" name="image_processing" output="screen">
+  </node>
+
+  <arg name="camera" default="False" />
+  <arg name="gps" default="False" />
+  <arg name="lidar" default="False" />
+  <arg name="imu" default="False" />
+  <arg name="encoders" default="False" />
+  <arg name="actuation" default="True" />
+  <arg name="root_path" default="/home/odroid/goldeneye_data" />
+
+  <param name="camera" value="$(arg camera)" type="boolean"/>
+  <param name="gps" value="$(arg gps)" type="boolean"/>
+  <param name="lidar" value="$(arg lidar)" type="boolean"/>
+  <param name="imu" value="$(arg imu)" type="boolean"/>
+  <param name="encoders" value="$(arg encoders)" type="boolean"/>
+  <param name="actuation" value="$(arg actuation)" type="boolean"/>
+  <param name="root_path" value="$(arg root_path)" type="string"/>
+
+</launch>
