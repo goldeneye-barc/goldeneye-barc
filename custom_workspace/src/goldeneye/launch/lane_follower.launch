@@ -1,0 +1,27 @@
+<launch>
+  <node pkg="rosserial_python" type="serial_node.py" name="arduino_node" >
+  	<param name="port" value="/dev/ttyUSB0" />
+  </node>
+  <node pkg="pointgrey_camera_driver" type="camera_node" name="barc_cam" output="screen">
+  <param name="framerate" value="30"/>    
+  <param name="image_transport" value="compressed" />
+  </node>
+
+  <node pkg="goldeneye" type="simple_lane_follower.py" name="image_processing" output="screen">
+  </node>
+
+  <arg name="display_image" default="False" />
+  <arg name="display_processed_image" default="False" />
+  <arg name="publish_processed_image" default="False" />
+  <arg name="debug_info" default="False" />
+  <arg name="upperY" default="500" />
+  <arg name="lowerY" default="200" />
+
+  <param name="display_image" value="$(arg display_image)" type="boolean"/>
+  <param name="display_processed_image" value="$(arg display_processed_image)" type="boolean"/>
+  <param name="publish_processed_image" value="$(arg publish_processed_image)" type="boolean"/>
+  <param name="debug_info" value="$(arg debug_info)" type="boolean"/>
+  <param name="upperY" value="$(arg upperY)" type="int"/>
+  <param name="lowerY" value="$(arg lowerY)" type="int"/>
+
+</launch>
