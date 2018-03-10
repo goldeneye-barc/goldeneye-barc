@@ -3,7 +3,8 @@ import rospy
 from geometry_msgs.msg import Vector3
 from sensor_msgs.msg import Imu
 from math import sin, cos
-from marvelmind_nav.msg import hedge_pos
+import numpy as np
+#from marvelmind_nav.msg import hedge_pos
 
 def get_xy(msg):
     global X,Y
@@ -14,8 +15,9 @@ def get_Psi(msg):
     global Psi
     Psi = msg.z
 
-def plan_path(obstacles, goal):
-    obstacles = obstacles.sort(key=lambda obs: (obs[0] - X)**2 + (obs[1] - Y)**2)
+def plan_path(obstacles, goal, X, Y, Psi):
+    print(obstacles)
+    obstacles.sort(key=lambda obs: (obs[0] - X)**2 + (obs[1] - Y)**2)
     x_curr, y_curr, psi_curr = X, Y, Psi
     R_max = 1
     waypoints = []
@@ -36,7 +38,7 @@ def plan_path(obstacles, goal):
             xt = dist * np.cos(theta) + x_curr
             yt = dist * np.sin(theta) + y_curr
 
-            curr_goal_dist = ((xt - curr_x)**2 + (yt - curr_y)**2) ** 0.5
+            curr_goal_dist = ((xt - x_curr)**2 + (yt - y_curr)**2) ** 0.5
             final_obstacle_dist = ((xt - obstacle[0])**2 + (yt - obstacle[1])**2) ** 0.5
             if curr_goal_dist < goal_dist and final_obstacle_dist > obstacle[2]:
                 x_opt, y_opt, min_dist, best_psi = xt, yt, curr_goal_dist, theta
@@ -44,6 +46,11 @@ def plan_path(obstacles, goal):
         next_pos.x = x_opt 
         next_pos.y = y_opt
         x_curr, y_curr, psi_curr = x_opt, y_opt, best_psi
+        waypoints.append(next_pos)
+    next_pos = Vector3()
+    next_pos.x = goal[0]
+    next_pos.y = goal[1]
+    waypoints.append(next_pos)
     return waypoints
 
 
@@ -59,9 +66,18 @@ def motion_planner():
     rate = rospy.Rate(10)
     while X is None or Y is None or Psi is None: continue
 
-    target_pos = plan_path(obstacles, goal) # np.array of [(x1, y1, r1), (x2, y2, r3) ...] ; (x, y)
+    waypoints = plan_path(obstacles, goal) # np.array of [(x1, y1, r1), (x2, y2, r3) ...] ; (x, y)
+    curr_waypoint = 0
+    thresh = 0.2
+
     while not rospy.is_shutdown():# and r.successful():
-        pub.publish(target_pos)
+        x_curr = waypoints[curr_waypoint].x
+        y_curr = waypoints[curr_waypoint].y
+        
+        if ((X - x_curr)**2 + (Y - y_curr)**2) ** 0.5 < thresh:
+            curr_waypoint = min(curr_waypoint + 1, len(curr_waypoint)- 1)
+
+        pub.publish(waypoints[curr_waypoint])
         rate.sleep()
 
 
