@@ -14,12 +14,12 @@ def bounding_box(img):
     # draw a rectangle to visualize the bounding rect
     cv2.rectangle(ret, (x, y), (x+w, y+h), 255, 2)
     # get the min area rect
-    rect = cv2.minAreaRect(max_contour)
-    box = cv2.boxPoints(rect)
+    #rect = cv2.minAreaRect(max_contour)
+    #box = cv2.boxPoints(rect)
     # convert all coordinates floating point values to int
-    box = np.int0(box)
+    #box = np.int0(box)
     # draw a red 'nghien' rectangle
-    cv2.drawContours(ret, [box], 0, 255)
+    #ret= cv2.drawContours(ret, [max_contour], 0, 255)
     return ret, [(x, y), (x+w, y+h)]
 
 def frame_to_bounding_box(img, IMAGE_MODE='rgb'):

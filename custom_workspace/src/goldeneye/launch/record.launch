@@ -3,6 +3,7 @@
   </node>
 
   <arg name="camera" default="False" />
+  <arg name="camera_array" default="False" />
   <arg name="processed_image" default="False" />
   <arg name="gps" default="False" />
   <arg name="lidar" default="False" />
@@ -13,6 +14,7 @@
   <arg name="root_path" default="/home/odroid/goldeneye_data" />
 
   <param name="camera" value="$(arg camera)" type="boolean"/>
+  <param name="camera_array" value="$(arg camera_array)" type="boolean"/>
   <param name="processed_image" value="$(arg processed_image)" type="boolean"/>
   <param name="gps" value="$(arg gps)" type="boolean"/>
   <param name="lidar" value="$(arg lidar)" type="boolean"/>

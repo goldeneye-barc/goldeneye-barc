@@ -5,15 +5,16 @@ import subprocess
 import os
 import datetime
 
-DATA_TOPICS = ['camera', 'gps', 'actuation', 'lidar', 'imu', 'encoders', 'processed_image', 'velocity']
+DATA_TOPICS = ['camera', 'gps', 'actuation', 'lidar', 'imu', 'encoders', 'processed_image', 'velocity', 'camera_array']
 
 class DataCollector():
     def __init__(self, params):
         self.topic_mappings = {
             'camera': '/image_raw',
+            'camera_array': '/image_raw',
             'gps': 'TODO',
             'actuation': '/ecu_pwm',
-            'lidar': 'TODO',
+            'lidar': '/scan',
             'imu': 'TODO',
             'encoders': 'TODO',
             'processed_image': 'TODO',
@@ -46,7 +47,7 @@ class DataCollector():
         self.rosbag_proc = subprocess.Popen(rosbag_command, stdin=subprocess.PIPE, shell=True, cwd=self.log_dir)
 
         if self.topic_booleans['camera']:
-            camera_command = 'rosrun image_view video_recorder image:=' + self.topic_mappings['camera'] + ' _fps:=30 _image_transport:=compressed'
+            camera_command = 'rosrun image_view video_recorder image:=' + self.topic_mappings['camera'] + ' _image_transport:=compressed'
             print('RUNNING: ', camera_command)
             self.video_proc = subprocess.Popen(camera_command, stdin=subprocess.PIPE, shell=True, cwd=self.log_dir)
         if self.topic_booleans['processed_image']:
@@ -56,7 +57,7 @@ class DataCollector():
 
     def end_all(self):
         self.rosbag_proc.kill()
-        if self.topic_booleans['camera']: camera_command.kill()
+        if self.topic_booleans['camera']: self.video_proc.kill()
 
 def data_recorder():
     param_names = DATA_TOPICS + ['root_path']
