@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format ="2">
-  <name>GoldeneyeKeyNode</name>
+  <name>goldeneye</name>
   <version>0.0.0</version>
   <description>BARC Package with KEYBOARD NODE to control BARC with keyboard. Created by ROHAN SINHA for Berkeley GOLDENEYE</description>
 

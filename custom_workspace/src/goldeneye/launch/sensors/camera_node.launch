@@ -1,0 +1,7 @@
+<launch>
+    <!-- CAMERA -->
+  <node pkg="pointgrey_camera_driver" type="camera_node" name="barc_cam" output="screen">
+    <param name="framerate" value="30"/>    
+    <param name="image_transport" value="compressed" />
+  </node>
+</launch>

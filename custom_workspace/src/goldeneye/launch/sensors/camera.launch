@@ -1,0 +1,11 @@
+<launch>
+    <!-- CAMERA -->
+  <node pkg="pointgrey_camera_driver" type="camera_node" name="barc_cam" output="screen">
+    <param name="framerate" value="30"/>    
+    <param name="image_transport" value="compressed" />
+  </node>
+  <node pkg="image_view" type="image_view" name="image_view" output="screen">
+    <remap from="image" to="/image_raw" />
+    <param name="image_transport" value="compressed" />
+  </node>
+</launch>
