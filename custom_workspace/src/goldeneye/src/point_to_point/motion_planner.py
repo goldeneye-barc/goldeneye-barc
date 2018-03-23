@@ -16,32 +16,36 @@ def get_Psi(msg):
     Psi = msg.z
 
 def plan_path(obstacles, goal, X, Y, Psi):
-    print(obstacles)
     obstacles.sort(key=lambda obs: (obs[0] - X)**2 + (obs[1] - Y)**2)
     x_curr, y_curr, psi_curr = X, Y, Psi
-    R_max = 1
+    R_max = 1.0
     waypoints = []
     for obstacle in obstacles:
         dist = ((obstacle[0] - x_curr)**2 + (obstacle[1] - y_curr)**2) ** 0.5
         goal_dist = ((goal[0] - x_curr)**2 + (goal[1] - y_curr)**2) ** 0.5
 
         if dist < 2 * R_max:
-            theta = np.acos(dist / (2 * R_max))
+            #print('less')
+            theta = np.arccos(dist / (2 * R_max))
             thetas = np.linspace(-theta, theta, 21)
         else:
+            #print('more')
             thetas = np.linspace(0, 2*np.pi, 50)
 
-        min_dist = goal_dist
+        min_dist = float('inf')#goal_dist
         best_psi = -float('inf')
         x_opt, y_opt = 0, 0
         for theta in thetas:
             xt = dist * np.cos(theta) + x_curr
             yt = dist * np.sin(theta) + y_curr
 
-            curr_goal_dist = ((xt - x_curr)**2 + (yt - y_curr)**2) ** 0.5
+            curr_goal_dist = ((xt - goal[0])**2 + (yt - goal[1])**2) ** 0.5
             final_obstacle_dist = ((xt - obstacle[0])**2 + (yt - obstacle[1])**2) ** 0.5
-            if curr_goal_dist < goal_dist and final_obstacle_dist > obstacle[2]:
+            #print(curr_goal_dist, goal_dist, final_obstacle_dist, obstacle, theta)
+            #print(curr_goal_dist < min_dist, final_obstacle_dist > obstacle[2])
+            if curr_goal_dist < min_dist and final_obstacle_dist > obstacle[2]:
                 x_opt, y_opt, min_dist, best_psi = xt, yt, curr_goal_dist, theta
+        #print(dist, min_dist, obstacle, 'fin')
         next_pos = Vector3()
         next_pos.x = x_opt 
         next_pos.y = y_opt
@@ -66,13 +70,16 @@ def preprocess(params):
         return map(float, obs.split(','))
 
     obstacles_str = params['obstacles'].replace(" ", "")
-    obstacles = [process_obstacle(obstacle) for obstacle in obstacles_str.split(';')]
+    if params['obstacles'] == 'x': 
+        obstacles = []
+    else:
+        obstacles = [process_obstacle(obstacle) for obstacle in obstacles_str.split(';')]
     params['obstacles'] = obstacles
     return params
 
 def motion_planner():
     global X,Y,Psi
-    X, Y, Psi = None, None, None
+    X, Y, Psi, waypoints = None, None, None, None
     param_names = ['goal', 'obstacles'] 
     params = {}
     for param in param_names:
@@ -81,24 +88,27 @@ def motion_planner():
     print(params)
 
     rospy.init_node('motion_planner')
-    rospy.Subscriber('hedge_pos',hedge_pos,get_xy,queue_size=10)
-    rospy.Subscriber('/euler_angles',Vector3,get_Psi,queue_size=10)
+    rospy.Subscriber('hedge_pos', hedge_pos,get_xy,queue_size=10)
+    rospy.Subscriber('euler_angles',Vector3,get_Psi,queue_size=10)
     pub = rospy.Publisher('target_position',Vector3, queue_size=10)
     rate = rospy.Rate(10)
-    while X is None or Y is None or Psi is None: continue
-    print("Received first X, Y, Psi position")
 
-    waypoints = plan_path(obstacles, goal) # np.array of [(x1, y1, r1), (x2, y2, r3) ...] ; (x, y)
     curr_waypoint = 0
     thresh = 0.2
 
     while not rospy.is_shutdown():# and r.successful():
+        if X is None or Y is None or Psi is None: continue
+        if not waypoints:
+            waypoints = plan_path(params['obstacles'], params['goal'], X, Y, Psi) # np.array of [(x1, y1, r1), (x2, y2, r3) ...] ; (x, y)
+            print("Waypoints", waypoints)
+
         x_curr = waypoints[curr_waypoint].x
         y_curr = waypoints[curr_waypoint].y
         
         if ((X - x_curr)**2 + (Y - y_curr)**2) ** 0.5 < thresh:
-            curr_waypoint = min(curr_waypoint + 1, len(curr_waypoint)- 1)
+            curr_waypoint = min(curr_waypoint + 1, len(waypoints)- 1)
 
+        #print(waypoints[curr_waypoint])
         pub.publish(waypoints[curr_waypoint])
         rate.sleep()
 

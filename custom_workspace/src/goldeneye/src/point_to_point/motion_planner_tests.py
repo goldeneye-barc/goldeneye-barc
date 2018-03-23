@@ -1,12 +1,12 @@
 from motion_planner import plan_path
 
 def test_planner():
-    obstacles = [[5,0,1], [10,2,1], [15, -1, 1]]
-    goal = [20,0]
+    obstacles = [[2.53, 2.42, 0.5]]
+    goal = [3.06,4.38]
     global X,Y,Psi
-    X = 0
-    Y = 0
-    Psi = 0
+    X = 2.4
+    Y = 0.4
+    Psi = 3.14159/2
     waypoints = plan_path(obstacles,goal, X, Y, Psi)
     print(waypoints)
 

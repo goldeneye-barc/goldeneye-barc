@@ -60,7 +60,7 @@ def euler_angles():
         tcap = rospy.get_time()
         pub.publish(outmsg)
         rate.sleep()
-    raise Exception('ode failed')
+    #raise Exception('ode failed')
 
 if __name__ == '__main__':
     try:

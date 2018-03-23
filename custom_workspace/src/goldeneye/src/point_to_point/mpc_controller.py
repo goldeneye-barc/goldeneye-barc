@@ -3,9 +3,8 @@ import rospy
 from geometry_msgs.msg import Vector3
 from sensor_msgs.msg import Imu
 from barc.msg import ECU
-from math import sin, cos
 import numpy as np
-#from marvelmind_nav.msg import hedge_pos
+from marvelmind_nav.msg import hedge_pos
 
 def get_xy(msg):
     global X,Y
@@ -22,23 +21,28 @@ def get_target(msg):
     targetY = msg.y
 
 def mpc_controller(Psi,X,Y,targetX,targetY,V):
-    max_steer = np.pi/6
-    Rate = 10
+    max_steer = np.pi/10
+    Rate = 10.0
     dt = 1/Rate
-    R = np.array([cos(Psi), -sin(Psi)],[sin(Psi),cos(Psi)])
+    R = np.array([[np.cos(Psi), -np.sin(Psi)],[np.sin(Psi),np.cos(Psi)]])
+    #print(Psi)
+    #localCoords = R.dot(np.array([targetX -X , targetY -Y]))
+    #localY = localCoords[1]
+    #error = localY
+    #return error
     Cost_min = float('inf')
     delta_opt = 0
     deltas = np.linspace(-max_steer,max_steer,21)
     for delta in deltas:
         dx = V*dt 
         dy = 2*V*delta*dt
-        dp = np.array([dx],[dy])
-        drot = np.mutmul(R,dp)
+        dp = np.array([dx,dy])
+        drot = R.dot(dp) #np.mutmul(R,dp)
+        #print('rot', drot, 'R', R, 'dp', dp)
         Xfin = X + drot[0]
-        Yfin = X + drot[1]
+        Yfin = Y + drot[1]
 
         Cost = ((targetX-Xfin)**2 + (targetY - Yfin)**2)**.5
-        
         if Cost < Cost_min:
             Cost_min = Cost
             delta_opt = delta
@@ -55,19 +59,19 @@ def mpc_node():
     rospy.Subscriber('hedge_pos',hedge_pos,get_xy,queue_size=10)
     rospy.Subscriber('/euler_angles',Vector3,get_Psi,queue_size=10)
     rospy.Subscriber('target_position',Vector3,get_target, queue_size=10)
-    pub = rospy.Publisher('ecu_pwm',ECU,queue_size=10)
+    pub = rospy.Publisher('/ecu_pwm',ECU,queue_size=10)
     rate = rospy.Rate(10)
-    while X is None or Y is None or Psi is None or targetY is None: continue
 
     max_steer = np.pi/6
     K = 400/max_steer
     V = 1
 
     while not rospy.is_shutdown():# and r.successful():
-        delta = mpc_controller(Psi,X,Y,targetX,targetY,V)
+        if X is None or Y is None or Psi is None or targetX is None or targetY is None: continue
+        delta = mpc_controller(Psi,X,Y,targetX,targetY,V) 
         msg = ECU()
         msg.motor = 1580
-        msg.servo = 1500 + K*delta
+        msg.servo = 1500 - delta*K #/ 10 * 800
         pub.publish(msg)
         rate.sleep()
 
