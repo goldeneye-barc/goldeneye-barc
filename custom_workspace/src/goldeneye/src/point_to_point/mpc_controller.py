@@ -21,7 +21,7 @@ def get_target(msg):
     targetY = msg.y
 
 def mpc_controller(Psi,X,Y,targetX,targetY,V):
-    max_steer = np.pi/10
+    max_steer = np.pi/8
     Rate = 10.0
     dt = 1/Rate
     R = np.array([[np.cos(Psi), -np.sin(Psi)],[np.sin(Psi),np.cos(Psi)]])
