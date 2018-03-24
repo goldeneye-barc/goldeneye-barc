@@ -55,7 +55,7 @@ class DataCollector():
 
     def end_all(self):
         self.rosbag_proc.kill()
-        if self.topic_booleans['camera']: self.camera_command.kill()
+        if self.topic_booleans['camera']: camera_command.kill()
 
 def data_recorder():
     param_names = DATA_TOPICS + ['root_path']
