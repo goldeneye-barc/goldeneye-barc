@@ -3,6 +3,7 @@ import rospy
 from geometry_msgs.msg import Vector3
 from sensor_msgs.msg import Imu
 from math import sin, cos
+from rrt_star import plan_path
 import numpy as np
 from marvelmind_nav.msg import hedge_pos
 
@@ -31,7 +32,8 @@ def plan_path(obstacles, goal, X, Y, Psi):
         if dist < 2 * R_max:
             #print('less')
             theta = np.arccos(dist / (2 * R_max))
-            thetas = np.linspace(-theta, theta, 21)
+            theta = pnp.pi/2 - theta
+            thetas = np.linspace(curr_psi-theta, curr_psi + theta, 21)
         else:
             #print('more')
             thetas = np.linspace(0, 2*np.pi, 50)
@@ -61,6 +63,7 @@ def plan_path(obstacles, goal, X, Y, Psi):
     waypoints.append(next_pos)
     return waypoints
 
+plan_path = rrt_star.plan_path
 
 def preprocess(params):
     #  launch file string arguments as goal:="x,y" obstacles:="x1,y1,r1;x2,y2,r2"
