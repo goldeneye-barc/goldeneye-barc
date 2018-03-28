@@ -6,6 +6,10 @@ from barc.msg import ECU
 import numpy as np
 from marvelmind_nav.msg import hedge_pos
 
+wait_for_heading_angle = rospy.get_param('heading_angle_flag')
+while wait_for_heading_angle:
+	wait_for_heading_angle = rospy.get_param('heading_angle_flag')
+
 def get_xy(msg):
     global X,Y
     X = msg.x_m

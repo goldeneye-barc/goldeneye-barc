@@ -56,7 +56,8 @@ def euler_angles():
         outmsg.x = 0
         outmsg.y = 0
         yaw  = yaw + wz*(rospy.get_time() - tcap)
-        outmsg.z = yaw
+        offset = rospy.get_param('heading_angle')
+        outmsg.z = yaw + offset
         tcap = rospy.get_time()
         pub.publish(outmsg)
         rate.sleep()

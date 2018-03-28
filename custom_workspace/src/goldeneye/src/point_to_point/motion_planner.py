@@ -6,6 +6,10 @@ from math import sin, cos
 import numpy as np
 from marvelmind_nav.msg import hedge_pos
 
+flag = rospy.get_param('heading_angle_flag')
+while flag:
+	flag = rospy.get_param('heading_angle_flag')
+
 def get_xy(msg):
     global X,Y
     X = msg.x_m
