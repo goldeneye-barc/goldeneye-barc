@@ -15,8 +15,7 @@
       <param name="baud_rate" value="115200" />
   </node>
 
-  <node pkg="marvelmind_nav" type="hedge_rcv_bin" name="barc_gps" output="screen" args="/dev/ttyACM1">
-  </node>
+  <!--<node pkg="marvelmind_nav" type="hedge_rcv_bin" name="barc_gps" output="screen" args="/dev/ttyACM1"> </node>-->
   <node pkg="goldeneye" type="heading_angle.py" name="heading_angle" output="screen">
   </node>
   <node pkg="goldeneye" type="find_euler.py" name="find_euler" output="screen">

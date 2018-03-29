@@ -1,7 +1,4 @@
 <launch>
+  <node pkg="marvelmind_nav" type="hedge_rcv_bin" name="barc_gps" output="screen" args="/dev/ttyACM1"> </node>
 	<!-- IMU -->
-    <node pkg="nmea_navsat_driver" type="nmea_serial_driver" name="gps">
-        <param name="port" value="/dev/ttyACM1" />
-        <param name="baud_rate" value="115200" />
-    </node>
 </launch>

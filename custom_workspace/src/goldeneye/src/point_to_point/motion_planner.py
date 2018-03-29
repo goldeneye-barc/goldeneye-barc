@@ -3,7 +3,7 @@ import rospy
 from geometry_msgs.msg import Vector3
 from sensor_msgs.msg import Imu
 from math import sin, cos
-from rrt_star import plan_path
+import rrt_star 
 import numpy as np
 from marvelmind_nav.msg import hedge_pos
 

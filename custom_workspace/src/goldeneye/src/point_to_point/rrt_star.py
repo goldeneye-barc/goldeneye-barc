@@ -243,9 +243,5 @@ def plan_path(obstacles, goal, X, Y, Psi):
         v.x = x
         v.y = y
         waypoints.append(v)
-    next_pos = Vector3()
-    next_pos.x = goal[0]
-    next_pos.y = goal[1]
-    waypoints.append(next_pos)
     return waypoints
 
